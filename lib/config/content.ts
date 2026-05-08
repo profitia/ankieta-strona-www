@@ -176,21 +176,34 @@ export const SECTION_PREVIEWS: Record<string, SectionPreviewConfig> = {
   },
 };
 
-export function getSectionPreview(slug: string): SectionPreviewConfig {
-  return (
-    SECTION_PREVIEWS[slug] ?? {
-      label: slug,
-      description:
-        "Sekcja do oceny. Sprawdź jej jakość komunikacji, wiarygodność i skuteczność.",
-      elements: ["Treść sekcji", "Elementy wizualne", "Wezwania do działania"],
-      evaluationTips: [
-        "Czy sekcja realizuje swój cel?",
-        "Czy jest czytelna i zrozumiała?",
-        "Czy design jest spójny z resztą strony?",
-      ],
-      wireframeType: "generic",
-    }
-  );
+const PILLAR_SCREENSHOT_DIRS: Record<string, string> = {
+  doradztwo: "/screenshots/doradztwo",
+  edukacja: "/screenshots/edukacja",
+  career: "/screenshots/career",
+};
+
+export function getSectionPreview(slug: string, pillarSlug?: string): SectionPreviewConfig {
+  const base = SECTION_PREVIEWS[slug] ?? {
+    label: slug,
+    description:
+      "Sekcja do oceny. Sprawdź jej jakość komunikacji, wiarygodność i skuteczność.",
+    elements: ["Treść sekcji", "Elementy wizualne", "Wezwania do działania"],
+    evaluationTips: [
+      "Czy sekcja realizuje swój cel?",
+      "Czy jest czytelna i zrozumiała?",
+      "Czy design jest spójny z resztą strony?",
+    ],
+    wireframeType: "generic" as const,
+  };
+
+  if (pillarSlug && PILLAR_SCREENSHOT_DIRS[pillarSlug]) {
+    return {
+      ...base,
+      screenshotPath: `${PILLAR_SCREENSHOT_DIRS[pillarSlug]}/${slug}.jpg`,
+    };
+  }
+
+  return base;
 }
 
 // ---------------------------------------------------------------------------

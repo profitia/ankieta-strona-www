@@ -7,10 +7,11 @@ import { getSectionPreview } from "@/lib/config/content";
 interface SectionPreviewProps {
   sectionSlug: string;
   pillarName: string;
+  pillarSlug?: string;
 }
 
-export function SectionPreview({ sectionSlug, pillarName }: SectionPreviewProps) {
-  const config = getSectionPreview(sectionSlug);
+export function SectionPreview({ sectionSlug, pillarName, pillarSlug }: SectionPreviewProps) {
+  const config = getSectionPreview(sectionSlug, pillarSlug);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const closeLightbox = useCallback(() => setLightboxOpen(false), []);

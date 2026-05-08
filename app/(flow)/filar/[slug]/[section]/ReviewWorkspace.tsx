@@ -95,10 +95,10 @@ export function ReviewWorkspace({
           }}
           className="max-lg:hidden"
         >
-          <SectionPreview sectionSlug={section.slug} pillarName={pillarName} />
+          <SectionPreview sectionSlug={section.slug} pillarName={pillarName} pillarSlug={pillarSlug} />
         </div>
 
-        {/* Right - Review form */}
+        {/* Right - Review form */
         <div
           style={{
             flex: 1,
@@ -167,7 +167,7 @@ export function ReviewWorkspace({
                 borderBottom: "1px solid #DDE3EE",
               }}
             >
-              <SectionPreview sectionSlug={section.slug} pillarName={pillarName} />
+              <SectionPreview sectionSlug={section.slug} pillarName={pillarName} pillarSlug={pillarSlug} />
             </div>
 
             {/* Form */}
