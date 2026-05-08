@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getPillarBySlug } from "@/lib/db/pillars";
 import { PillarSectionList } from "./PillarSectionList";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ slug: string }>;
 }

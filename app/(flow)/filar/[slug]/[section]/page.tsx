@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getPillarBySlug } from "@/lib/db/pillars";
 import { ReviewWorkspace } from "./ReviewWorkspace";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ slug: string; section: string }>;
 }

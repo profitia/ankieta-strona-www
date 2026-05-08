@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getPillars } from "@/lib/db/pillars";
 import { PillarCardServer } from "./PillarCardServer";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Ocena strony - Profitia Review",
 };
