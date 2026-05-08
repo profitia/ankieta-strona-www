@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum ReviewStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+// ---------------------------------------------------------------------------
+// Models
+// ---------------------------------------------------------------------------
+
+model Pillar {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  createdAt DateTime @default(now())
+
+  sections Section[]
+  sessions ReviewSession[]
+}
+
+model Section {
+  id        String   @id @default(cuid())
+  pillarId  String
+  slug      String
+  name      String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  pillar  Pillar          @relation(fields: [pillarId], references: [id], onDelete: Cascade)
+  reviews SectionReview[]
+
+  @@unique([pillarId, slug])
+}
+
+model ReviewSession {
+  id          String        @id @default(cuid())
+  pillarId    String
+  status      ReviewStatus  @default(PENDING)
+  startedAt   DateTime      @default(now())
+  completedAt DateTime?
+
+  pillar  Pillar          @relation(fields: [pillarId], references: [id], onDelete: Cascade)
+  reviews SectionReview[]
+}
+
+model SectionReview {
+  id            String    @id @default(cuid())
+  sessionId     String
+  sectionId     String
+  clarityScore  Int
+  businessScore Int
+  trustScore    Int
+  designScore   Int
+  ctaScore      Int
+  severity      Severity  @default(MEDIUM)
+  feedbackTypes String[]
+  problem       String
+  impact        String
+  suggestion    String
+  notes         String?
+  screenshotUrl String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  session ReviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  section Section       @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, sectionId])
+}

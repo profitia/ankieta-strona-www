@@ -1,36 +1,140 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Website Review Hub — Profitia
 
-## Getting Started
+Internal tool for systematic review and feedback on Profitia website content pillars.
 
-First, run the development server:
+## Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript |
+| Styling | TailwindCSS v4 + shadcn/ui |
+| Database | PostgreSQL (Neon) |
+| ORM | Prisma v7 |
+| Validation | Zod |
+| Forms | React Hook Form + @hookform/resolvers |
+| State | Zustand |
+| Icons | Lucide React |
+| Toasts | Sonner |
+| Linting | ESLint |
+| Formatting | Prettier + prettier-plugin-tailwindcss |
+
+## Setup
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/profitia/ankieta-strona-www.git
+cd ankieta-strona-www
+npm install
+```
+
+### 2. Environment variables
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and set your Neon database credentials:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@ep-dark-hall-aqes4gy0-pooler.c-8.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+```
+
+### 3. Prisma — push schema to database
+
+```bash
+npm run db:push
+```
+
+### 4. Seed initial data
+
+```bash
+npm run db:seed
+```
+
+This creates:
+- **Pillars**: Doradztwo, Edukacja, Career
+- **Sections** (per pillar): Hero, Value Proposition, Offer, CTA, Footer
+
+### 5. Run development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) — redirects to `/dashboard`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run format` | Format with Prettier |
+| `npm run db:push` | Push Prisma schema to DB |
+| `npm run db:generate` | Generate Prisma client |
+| `npm run db:seed` | Seed database |
+| `npm run db:studio` | Open Prisma Studio |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+.
+├── app/
+│   ├── (dashboard)/          # Dashboard route group
+│   │   ├── layout.tsx        # Dashboard shell (sidebar + topbar)
+│   │   └── dashboard/
+│   │       ├── page.tsx      # Dashboard home
+│   │       ├── pillars/      # Pillars management
+│   │       ├── reviews/      # Review sessions
+│   │       └── analytics/    # Analytics
+│   ├── api/
+│   │   ├── pillars/route.ts
+│   │   ├── sections/route.ts
+│   │   └── reviews/route.ts
+│   ├── globals.css
+│   ├── layout.tsx            # Root layout
+│   └── page.tsx              # → redirect /dashboard
+├── components/
+│   ├── ui/                   # shadcn/ui components
+│   ├── layout/               # Sidebar, Topbar
+│   └── shared/               # EmptyState, etc.
+├── features/                 # Feature modules (pillars, sections, reviews, analytics)
+├── lib/
+│   ├── prisma/client.ts      # Prisma singleton
+│   ├── db/                   # DB query helpers
+│   ├── validations/          # Zod schemas
+│   ├── constants/            # App constants
+│   └── utils/cn.ts           # cn utility
+├── stores/
+│   └── app-store.ts          # Zustand global store
+├── types/
+│   └── index.ts              # Shared TypeScript types
+├── prisma/
+│   ├── schema.prisma         # Database schema
+│   └── seed.ts               # Seed script
+└── .env.example
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Database Models
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Pillar** — Content pillar (slug, name)
+- **Section** — Page section within a pillar (slug, name, order)
+- **ReviewSession** — A full review of one pillar (status, timestamps)
+- **SectionReview** — Scored feedback for one section (5 scores, severity, text fields)
 
-## Deploy on Vercel
+## Deploy to Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+vercel --prod
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Set environment variables in Vercel dashboard:
+- `DATABASE_URL`
+- `NEXT_PUBLIC_APP_URL`
+
+**Vercel Project ID:** `prj_jL6jjzIQoyF6ZBYORSJbWIIXcchZ`
