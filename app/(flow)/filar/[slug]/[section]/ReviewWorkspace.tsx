@@ -98,7 +98,7 @@ export function ReviewWorkspace({
           <SectionPreview sectionSlug={section.slug} pillarName={pillarName} pillarSlug={pillarSlug} />
         </div>
 
-        {/* Right - Review form */
+        {/* Right - Review form */}
         <div
           style={{
             flex: 1,
