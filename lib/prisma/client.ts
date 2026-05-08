@@ -23,8 +23,20 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+function getPrismaInstance(): PrismaClient {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = createPrismaClient();
+  }
+  return globalForPrisma.prisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+// Lazy proxy — the actual client is only created on first method call (at request time),
+// not at module evaluation time (build time). This allows Next.js to import the module
+// during static build without DATABASE_URL being present.
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    return (getPrismaInstance() as unknown as Record<string | symbol, unknown>)[prop as string | symbol];
+  },
+});
 
 export default prisma;
