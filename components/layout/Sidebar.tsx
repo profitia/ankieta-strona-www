@@ -9,6 +9,7 @@ import {
   ClipboardList,
   Download,
   ChevronLeft,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/stores/app-store";
@@ -16,11 +17,16 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const navItems = [
-  { label: "Przegląd", href: "/dashboard", icon: LayoutGrid },
-  { label: "Filary", href: "/dashboard/filary", icon: Layers },
-  { label: "Strony", href: "/dashboard/strony", icon: FileText },
-  { label: "Review", href: "/dashboard/review", icon: ClipboardList },
-  { label: "Eksport", href: "/dashboard/eksport", icon: Download },
+  { label: "Przegląd", href: "/dashboard", icon: LayoutGrid, exact: true },
+  { label: "Filary", href: "/dashboard/filary", icon: Layers, exact: false },
+  { label: "Strony", href: "/dashboard/strony", icon: FileText, exact: false },
+  { label: "Review", href: "/dashboard/review", icon: ClipboardList, exact: false },
+  { label: "Eksport", href: "/dashboard/eksport", icon: Download, exact: false },
+];
+
+const adminItems = [
+  { label: "Content Reviews", href: "/admin/content-reviews", icon: ClipboardList },
+  { label: "UX Reviews", href: "/admin/reviews", icon: Settings },
 ];
 
 export function Sidebar() {
@@ -51,11 +57,10 @@ export function Sidebar() {
       {/* Nav */}
       <ScrollArea className="flex-1 py-4">
         <nav className="flex flex-col gap-0.5 px-2">
-          {navItems.map(({ label, href, icon: Icon }) => {
-            const isActive =
-              href === "/dashboard"
-                ? pathname === "/dashboard"
-                : pathname.startsWith(href);
+          {navItems.map(({ label, href, icon: Icon, exact }) => {
+            const isActive = exact
+              ? pathname === href
+              : pathname.startsWith(href);
 
             return (
               <Link key={href} href={href}>
@@ -75,26 +80,35 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Divider + admin links */}
-        {sidebarOpen && (
-          <div className="mt-6 px-4">
-            <p className="text-[0.625rem] font-medium uppercase tracking-widest text-sidebar-foreground/30 mb-2">
+        {/* Admin section */}
+        <div className={cn("mt-4 px-2", !sidebarOpen && "px-2")}>
+          {sidebarOpen && (
+            <p className="px-2.5 pb-1.5 pt-4 text-[0.625rem] font-medium uppercase tracking-widest text-sidebar-foreground/30">
               Admin
             </p>
-            <div className="flex flex-col gap-0.5">
-              {[
-                { label: "Content Reviews", href: "/admin/content-reviews" },
-                { label: "UX Reviews", href: "/admin/reviews" },
-              ].map(({ label, href }) => (
+          )}
+          {!sidebarOpen && <div className="mt-3 border-t border-border/40 mb-2" />}
+          <div className="flex flex-col gap-0.5">
+            {adminItems.map(({ label, href, icon: Icon }) => {
+              const isActive = pathname.startsWith(href);
+              return (
                 <Link key={href} href={href}>
-                  <span className="flex items-center px-2.5 py-1.5 text-xs text-sidebar-foreground/40 hover:text-sidebar-foreground/70 transition-colors rounded-sm">
-                    {label}
+                  <span
+                    className={cn(
+                      "flex items-center gap-3 px-2.5 py-2 text-sm transition-colors rounded-sm",
+                      isActive
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                        : "text-sidebar-foreground/40 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground/80"
+                    )}
+                  >
+                    <Icon className="h-4 w-4 shrink-0" />
+                    {sidebarOpen && <span>{label}</span>}
                   </span>
                 </Link>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        )}
+        </div>
       </ScrollArea>
 
       {/* Collapse */}

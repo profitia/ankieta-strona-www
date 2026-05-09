@@ -12,19 +12,17 @@ const breadcrumbMap: Record<string, string> = {
   "/dashboard/strony": "Strony",
   "/dashboard/review": "Review",
   "/dashboard/eksport": "Eksport",
-  "/dashboard/pillars": "Filary",
-  "/dashboard/reviews": "Review",
-  "/dashboard/analytics": "Analytics",
+  "/admin/content-reviews": "Content Reviews",
+  "/admin/reviews": "UX Reviews",
 };
 
 function getBreadcrumb(pathname: string): string {
-  // Exact match first
   if (breadcrumbMap[pathname]) return breadcrumbMap[pathname];
-  // Partial match
+  // Find the longest matching prefix (most specific)
   const key = Object.keys(breadcrumbMap)
     .filter((k) => pathname.startsWith(k) && k !== "/dashboard")
-    .pop();
-  return key ? breadcrumbMap[key] : "Dashboard";
+    .sort((a, b) => b.length - a.length)[0];
+  return key ? breadcrumbMap[key] : "Profitia Review";
 }
 
 export function Topbar() {
