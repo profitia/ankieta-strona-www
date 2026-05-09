@@ -30,7 +30,7 @@ export async function sendReviewCompletionNotification(
     where: { id: sessionId },
     include: {
       pillar: { include: { sections: true } },
-      reviews: true,
+      reviews: { include: { section: true }, orderBy: { section: { order: "asc" } } },
     },
   });
 
@@ -64,6 +64,15 @@ export async function sendReviewCompletionNotification(
     completedAt: session.completedAt ?? new Date(),
     sectionsCompleted: session.reviews.length,
     sectionsTotal: session.pillar.sections.length,
+    sections: session.reviews.map((r) => ({
+      name: r.section.name,
+      clarityScore: r.clarityScore,
+      businessScore: r.businessScore,
+      trustScore: r.trustScore,
+      designScore: r.designScore,
+      ctaScore: r.ctaScore,
+      severity: r.severity,
+    })),
     appUrl,
   });
 
