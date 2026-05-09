@@ -95,3 +95,54 @@ model SectionReview {
 
   @@unique([sessionId, sectionId])
 }
+
+// ---------------------------------------------------------------------------
+// Simplified Content Approval Flow (new lightweight version)
+// ---------------------------------------------------------------------------
+
+enum ContentSessionStatus {
+  IN_PROGRESS
+  COMPLETED
+}
+
+model ContentSession {
+  id                 String               @id @default(cuid())
+  pillarSlug         String
+  status             ContentSessionStatus @default(IN_PROGRESS)
+  startedAt          DateTime             @default(now())
+  completedAt        DateTime?
+  ipAddress          String?
+  city               String?
+  country            String?
+  notificationSent   Boolean              @default(false)
+  notificationSentAt DateTime?
+
+  blockReviews ContentBlockReview[]
+  finalAnswers ContentFinalAnswer[]
+}
+
+model ContentBlockReview {
+  id         String   @id @default(cuid())
+  sessionId  String
+  blockId    String
+  approved   Boolean
+  suggestion String?
+  createdAt  DateTime @default(now())
+
+  session ContentSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, blockId])
+}
+
+model ContentFinalAnswer {
+  id         String   @id @default(cuid())
+  sessionId  String
+  questionId String
+  approved   Boolean
+  comment    String?
+  createdAt  DateTime @default(now())
+
+  session ContentSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, questionId])
+}
