@@ -133,7 +133,7 @@ export function ReviewHeader({
         </nav>
 
         {/* Right: autosave + progress */}
-        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", flexShrink: 0 }}>
           <span
             style={{
               display: "flex",

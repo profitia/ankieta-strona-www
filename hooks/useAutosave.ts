@@ -40,7 +40,12 @@ export function useAutosave(sectionId: string, sessionId: string | null) {
           data.designScore &&
           data.ctaScore;
 
-        if (!hasRequiredScores) return;
+        const hasRequiredText =
+          typeof data.problem === "string" && data.problem.length >= 10 &&
+          typeof data.impact === "string" && data.impact.length >= 10 &&
+          typeof data.suggestion === "string" && data.suggestion.length >= 10;
+
+        if (!hasRequiredScores || !hasRequiredText) return;
 
         try {
           const res = await fetch("/api/reviews", {

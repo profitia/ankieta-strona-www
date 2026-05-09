@@ -49,7 +49,7 @@ export default async function FilarPage() {
             }}
             className="hover:text-navy"
           >
-            ← Powót do startu
+            ← Powrót do startu
           </Link>
         </div>
       </header>

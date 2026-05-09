@@ -46,7 +46,7 @@ export default function KontekstPage() {
               }}
               className="hover:text-navy"
             >
-                          ← Powót do startu
+                          ← Powrót do startu
             </Link>
             <span style={{ margin: "0 0.875rem", color: "#D9D9D9", fontSize: "0.75rem" }}>·</span>
             <span

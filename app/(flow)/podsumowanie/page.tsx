@@ -170,7 +170,7 @@ function PodsumowanieContent() {
               }}
               className="hover:text-navy"
             >
-              ← Powót do sekcji
+              ← Powrót do sekcji
             </Link>
             <span style={{ margin: "0 0.875rem", color: "#D9D9D9", fontSize: "0.75rem" }}>·</span>
             <span
