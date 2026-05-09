@@ -63,6 +63,9 @@ model ReviewSession {
   completedAt          DateTime?
   notificationSent     Boolean       @default(false)
   notificationSentAt   DateTime?
+  ipAddress            String?
+  city                 String?
+  country              String?
 
   pillar  Pillar          @relation(fields: [pillarId], references: [id], onDelete: Cascade)
   reviews SectionReview[]

@@ -28,6 +28,14 @@ export default async function AdminReviewsPage() {
     orderBy: { startedAt: "desc" },
   });
 
+  // Count sessions per IP (for "visits from same IP" column)
+  const ipCounts: Record<string, number> = {};
+  for (const s of sessions) {
+    if (s.ipAddress) {
+      ipCounts[s.ipAddress] = (ipCounts[s.ipAddress] ?? 0) + 1;
+    }
+  }
+
   return (
     <div
       style={{
@@ -77,7 +85,7 @@ export default async function AdminReviewsPage() {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                {["Filar", "Rozpoczęta", "Ukończona", "Sekcje", "Status", "Powiadomienie", ""].map((h) => (
+                {["Filar", "Rozpoczęta", "Ukończona", "Sekcje", "Lokalizacja", "Wejść z IP", "Status", "Powiadomienie", ""].map((h) => (
                   <th
                     key={h}
                     style={{
@@ -112,6 +120,29 @@ export default async function AdminReviewsPage() {
                   </td>
                   <td style={{ padding: "0.875rem 1rem 0.875rem 0", fontSize: "0.8125rem", color: "#767171", textAlign: "center" }}>
                     {s.reviews.length}
+                  </td>
+                  <td style={{ padding: "0.875rem 1rem 0.875rem 0", fontSize: "0.8125rem", color: "#767171" }}>
+                    {s.city || s.country ? (
+                      <span title={s.ipAddress ?? undefined}>
+                        {[s.city, s.country].filter(Boolean).join(", ")}
+                      </span>
+                    ) : s.ipAddress ? (
+                      <span style={{ fontFamily: "monospace", fontSize: "0.75rem", color: "#A6B2CC" }}>{s.ipAddress}</span>
+                    ) : (
+                      <span style={{ color: "#CAD2E3" }}>—</span>
+                    )}
+                  </td>
+                  <td style={{ padding: "0.875rem 1rem 0.875rem 0", fontSize: "0.8125rem", textAlign: "center" }}>
+                    {s.ipAddress ? (
+                      <span style={{
+                        color: (ipCounts[s.ipAddress] ?? 1) > 1 ? "#8E0055" : "#767171",
+                        fontWeight: (ipCounts[s.ipAddress] ?? 1) > 1 ? 600 : 400,
+                      }}>
+                        {ipCounts[s.ipAddress] ?? 1}
+                      </span>
+                    ) : (
+                      <span style={{ color: "#CAD2E3" }}>—</span>
+                    )}
                   </td>
                   <td style={{ padding: "0.875rem 1rem 0.875rem 0" }}>
                     <span

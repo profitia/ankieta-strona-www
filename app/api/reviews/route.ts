@@ -44,8 +44,19 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
       }
 
+      // Extract IP and geo from request headers (Vercel injects these automatically)
+      const headers = request.headers;
+      const ip =
+        headers.get("x-vercel-forwarded-for") ??
+        headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+        null;
+      const city = headers.get("x-vercel-ip-city")
+        ? decodeURIComponent(headers.get("x-vercel-ip-city")!)
+        : null;
+      const country = headers.get("x-vercel-ip-country") ?? null;
+
       const session = await prisma.reviewSession.create({
-        data: { ...parsed.data, status: "IN_PROGRESS" },
+        data: { ...parsed.data, status: "IN_PROGRESS", ipAddress: ip, city, country },
       });
 
       return NextResponse.json({ data: session }, { status: 201 });

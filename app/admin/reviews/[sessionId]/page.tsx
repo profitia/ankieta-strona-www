@@ -50,6 +50,11 @@ export default async function AdminReviewDetailPage({ params }: PageProps) {
 
   if (!session) notFound();
 
+  // Count all sessions from same IP for repeat-visit detection
+  const ipSessionCount = session.ipAddress
+    ? await prisma.reviewSession.count({ where: { ipAddress: session.ipAddress } })
+    : null;
+
   const overallAvg =
     session.reviews.length > 0
       ? (
@@ -133,6 +138,24 @@ export default async function AdminReviewDetailPage({ params }: PageProps) {
               )}
             </p>
           </div>
+          {(session.ipAddress || session.city || session.country) && (
+            <div>
+              <p style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "#A6B2CC", marginBottom: "0.375rem" }}>Lokalizacja</p>
+              <p style={{ fontSize: "0.875rem", color: "#242F44" }}>
+                {[session.city, session.country].filter(Boolean).join(", ") || "—"}
+              </p>
+              {session.ipAddress && (
+                <p style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "#A6B2CC", marginTop: "0.125rem" }}>
+                  {session.ipAddress}
+                  {ipSessionCount && ipSessionCount > 1 && (
+                    <span style={{ marginLeft: "0.5rem", color: "#8E0055", fontFamily: "inherit", fontWeight: 600 }}>
+                      · {ipSessionCount} sesji z tego IP
+                    </span>
+                  )}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Export links */}
