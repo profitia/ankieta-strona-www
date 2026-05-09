@@ -26,6 +26,29 @@ export default function ReviewLandingPage() {
           Wybierz obszar, który chcesz przejrzeć. Dla każdego bloku treści podejmiesz prostą decyzję: zostaje tak jak jest, albo wymaga zmiany.
         </p>
 
+        {/* Context link */}
+        <Link
+          href="/review/kontekst"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.75rem",
+            padding: "0.875rem 1rem",
+            backgroundColor: "#FFFFFF",
+            border: "1px solid #DDE3EE",
+            textDecoration: "none",
+            marginBottom: "1.5rem",
+          }}
+        >
+          <span style={{ fontSize: "0.625rem", fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase", color: "#CAD2E3", flexShrink: 0 }}>01</span>
+          <span style={{ fontSize: "0.875rem", color: "#767171" }}>Przeczytaj kontekst strategiczny strony (ok. 5 min)</span>
+          <span style={{ marginLeft: "auto", fontSize: "0.75rem", color: "#A6B2CC" }}>→</span>
+        </Link>
+
+        <p style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "#A6B2CC", marginBottom: "0.75rem" }}>
+          02 — Wybierz obszar
+        </p>
+
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginBottom: "3rem" }}>
           {ALL_PILLARS.map((pillar) => {
             const pill = PILL_STYLES[pillar.slug] ?? { bg: "#F8FAFC", color: "#242F44", label: pillar.name };

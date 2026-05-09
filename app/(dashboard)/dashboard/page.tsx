@@ -8,17 +8,24 @@ import prisma from "@/lib/prisma/client";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const [pillars, sessions] = await Promise.all([
+  const [pillars, sessions, allSessions, contentSessions, recentContentSessions] = await Promise.all([
     prisma.pillar.findMany({ include: { sections: true } }),
     prisma.reviewSession.findMany({
       include: { pillar: true, reviews: { select: { id: true } } },
       orderBy: { startedAt: "desc" },
       take: 5,
     }),
+    prisma.reviewSession.findMany({ select: { status: true } }),
+    prisma.contentSession.findMany({ select: { status: true } }),
+    prisma.contentSession.findMany({
+      orderBy: { startedAt: "desc" },
+      take: 5,
+      select: { id: true, pillarSlug: true, status: true, startedAt: true, blockReviews: { select: { id: true } } },
+    }),
   ]);
 
-  const allSessions = await prisma.reviewSession.findMany({ select: { status: true } });
   const completedCount = allSessions.filter((s) => s.status === "COMPLETED").length;
+  const contentCompletedCount = contentSessions.filter((s) => s.status === "COMPLETED").length;
   const totalReviews = sessions.reduce((acc, s) => acc + s.reviews.length, 0);
 
   const stats = [
@@ -42,6 +49,13 @@ export default async function DashboardPage() {
       description: "Z ostatnich 5 sesji",
       icon: BarChart2,
       href: "/dashboard/analytics",
+    },
+    {
+      label: "Content Review",
+      value: contentSessions.length.toString(),
+      description: `${contentCompletedCount} ukończonych`,
+      icon: ClipboardList,
+      href: "/admin/content-reviews",
     },
   ];
 
@@ -88,7 +102,7 @@ export default async function DashboardPage() {
       {/* Recent sessions */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Ostatnie sesje</CardTitle>
+          <CardTitle className="text-base">Ostatnie sesje (UX ankieta)</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2">
           {sessions.length === 0 ? (
@@ -114,6 +128,42 @@ export default async function DashboardPage() {
                 </Badge>
               </div>
             ))
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Recent content review sessions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Ostatnie Content Review</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {recentContentSessions.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Brak sesji content review.</p>
+          ) : (
+            recentContentSessions.map((s) => {
+              const PILLAR_LABEL: Record<string, string> = { wspolne: "Wspólne", doradztwo: "Doradztwo", edukacja: "Edukacja", career: "Kariera" };
+              return (
+                <div key={s.id} className="flex items-center justify-between rounded-lg border px-3 py-2 text-sm">
+                  <div className="flex items-center gap-3">
+                    {s.status === "COMPLETED" ? (
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                    ) : (
+                      <Clock className="h-4 w-4 text-amber-500 shrink-0" />
+                    )}
+                    <div>
+                      <span className="font-medium">{PILLAR_LABEL[s.pillarSlug] ?? s.pillarSlug}</span>
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {s.blockReviews.length} bloków · {new Date(s.startedAt).toLocaleDateString("pl-PL")}
+                      </span>
+                    </div>
+                  </div>
+                  <Badge variant={s.status === "COMPLETED" ? "default" : "secondary"} className="text-xs">
+                    {s.status === "COMPLETED" ? "Ukończona" : "W toku"}
+                  </Badge>
+                </div>
+              );
+            })
           )}
         </CardContent>
       </Card>

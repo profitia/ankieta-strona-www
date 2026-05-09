@@ -30,16 +30,7 @@ export async function PATCH(_request: Request, { params }: Params) {
     const answeredFinal = session.finalAnswers.length;
 
     if (reviewedBlocks < totalBlocks || answeredFinal < totalFinal) {
-      return NextResponse.json(
-        {
-          error: "Incomplete review",
-          details: {
-            blocks: `${reviewedBlocks}/${totalBlocks}`,
-            final: `${answeredFinal}/${totalFinal}`,
-          },
-        },
-        { status: 422 }
-      );
+      console.warn(`[content-complete] Incomplete review for ${id}: blocks ${reviewedBlocks}/${totalBlocks}, final ${answeredFinal}/${totalFinal}. Completing anyway.`);
     }
 
     const completed = await prisma.contentSession.update({
@@ -47,17 +38,26 @@ export async function PATCH(_request: Request, { params }: Params) {
       data: { status: "COMPLETED", completedAt: new Date() },
     });
 
-    // Fire-and-forget email notification (non-blocking)
+    // Send email notification with timeout (prevents serverless from killing before send)
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
     const adminLink = appUrl ? `${appUrl}/admin/content-reviews/${id}` : null;
-
-    void notifyCompletion({
-      sessionId: id,
-      pillarName: pillar?.name ?? session.pillarSlug,
-      blocksReviewed: reviewedBlocks,
-      approved: session.blockReviews.filter((b) => b.approved).length,
-      adminLink,
-    }).catch(() => {});
+    const NOTIFICATION_TIMEOUT_MS = 8_000;
+    try {
+      await Promise.race([
+        notifyCompletion({
+          sessionId: id,
+          pillarName: pillar?.name ?? session.pillarSlug,
+          blocksReviewed: reviewedBlocks,
+          approved: session.blockReviews.filter((b) => b.approved).length,
+          adminLink,
+        }),
+        new Promise<void>((_, reject) =>
+          setTimeout(() => reject(new Error("notification timeout")), NOTIFICATION_TIMEOUT_MS)
+        ),
+      ]);
+    } catch (notifErr) {
+      console.error("[content-complete] Notification failed (non-blocking):", notifErr);
+    }
 
     return NextResponse.json({ data: completed });
   } catch {

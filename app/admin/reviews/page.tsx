@@ -85,7 +85,7 @@ export default async function AdminReviewsPage() {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                {["Filar", "Rozpoczęta", "Ukończona", "Sekcje", "Lokalizacja", "Wejść z IP", "Status", "Powiadomienie", ""].map((h) => (
+                {["Filar", "Rozpoczęta", "Ukończona", "Sekcje", "IP", "Wejść z IP", "Status", "Powiadomienie", ""].map((h) => (
                   <th
                     key={h}
                     style={{
@@ -111,26 +111,18 @@ export default async function AdminReviewsPage() {
                     {s.pillar.name}
                   </td>
                   <td style={{ padding: "0.875rem 1rem 0.875rem 0", fontSize: "0.8125rem", color: "#767171", whiteSpace: "nowrap" }}>
-                    {new Date(s.startedAt).toLocaleDateString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric" })}
+                    {new Date(s.startedAt).toLocaleString("pl-PL", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}
                   </td>
                   <td style={{ padding: "0.875rem 1rem 0.875rem 0", fontSize: "0.8125rem", color: "#767171", whiteSpace: "nowrap" }}>
                     {s.completedAt
-                      ? new Date(s.completedAt).toLocaleDateString("pl-PL", { day: "2-digit", month: "2-digit", year: "numeric" })
+                      ? new Date(s.completedAt).toLocaleString("pl-PL", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })
                       : "—"}
                   </td>
                   <td style={{ padding: "0.875rem 1rem 0.875rem 0", fontSize: "0.8125rem", color: "#767171", textAlign: "center" }}>
                     {s.reviews.length}
                   </td>
-                  <td style={{ padding: "0.875rem 1rem 0.875rem 0", fontSize: "0.8125rem", color: "#767171" }}>
-                    {s.city || s.country ? (
-                      <span title={s.ipAddress ?? undefined}>
-                        {[s.city, s.country].filter(Boolean).join(", ")}
-                      </span>
-                    ) : s.ipAddress ? (
-                      <span style={{ fontFamily: "monospace", fontSize: "0.75rem", color: "#A6B2CC" }}>{s.ipAddress}</span>
-                    ) : (
-                      <span style={{ color: "#CAD2E3" }}>—</span>
-                    )}
+                  <td style={{ padding: "0.875rem 1rem 0.875rem 0", fontSize: "0.6875rem", color: "#A6B2CC", fontFamily: "monospace" }}>
+                    {s.ipAddress ?? "—"}
                   </td>
                   <td style={{ padding: "0.875rem 1rem 0.875rem 0", fontSize: "0.8125rem", textAlign: "center" }}>
                     {s.ipAddress ? (

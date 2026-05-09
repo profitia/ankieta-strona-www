@@ -2,6 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 function ThankYouContent() {
   const params = useSearchParams();
@@ -27,6 +28,23 @@ function ThankYouContent() {
             ID sesji: {sessionId}
           </p>
         )}
+
+        <Link
+          href="/review"
+          style={{
+            display: "inline-block",
+            marginBottom: "2rem",
+            padding: "0.875rem 2rem",
+            backgroundColor: "#242F44",
+            color: "#FFFFFF",
+            fontSize: "0.9375rem",
+            fontWeight: 500,
+            textDecoration: "none",
+            letterSpacing: "0.01em",
+          }}
+        >
+          Powrót do strony głównej →
+        </Link>
 
         <div style={{ padding: "1.5rem", backgroundColor: "#FFFFFF", border: "1px solid #DDE3EE", textAlign: "left" }}>
           <p style={{ fontSize: "0.875rem", color: "#767171", lineHeight: 1.7, margin: 0 }}>

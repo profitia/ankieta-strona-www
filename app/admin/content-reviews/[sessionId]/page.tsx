@@ -16,7 +16,11 @@ const PILLAR_LABEL: Record<string, string> = {
 
 function fmt(d: Date | null) {
   if (!d) return "—";
-  return new Date(d).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" });
+  return new Date(d).toLocaleString("pl-PL", {
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    hour12: false,
+  });
 }
 
 export default async function ContentReviewDetailPage({ params }: PageProps) {
@@ -82,16 +86,10 @@ export default async function ContentReviewDetailPage({ params }: PageProps) {
           ))}
         </div>
 
-        {/* Geo */}
-        {(session.city || session.country || session.ipAddress) && (
-          <div style={{ marginBottom: "2.5rem", backgroundColor: "#FFFFFF", border: "1px solid #DDE3EE", padding: "1rem 1.25rem", display: "inline-block" }}>
-            <p style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "#A6B2CC", margin: "0 0 0.25rem" }}>Lokalizacja</p>
-            <p style={{ fontSize: "0.875rem", color: "#242F44", margin: 0 }}>
-              {[session.city, session.country].filter(Boolean).join(", ")}
-              {session.ipAddress && (
-                <span style={{ fontSize: "0.75rem", color: "#A6B2CC", fontFamily: "monospace", marginLeft: "0.75rem" }}>{session.ipAddress}</span>
-              )}
-            </p>
+        {/* IP */}
+        {session.ipAddress && (
+          <div style={{ marginBottom: "2.5rem" }}>
+            <span style={{ fontSize: "0.6875rem", color: "#CAD2E3", fontFamily: "monospace" }}>{session.ipAddress}</span>
           </div>
         )}
 

@@ -13,7 +13,11 @@ const PILLAR_LABEL: Record<string, string> = {
 
 function fmt(d: Date | null) {
   if (!d) return "—";
-  return new Date(d).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" });
+  return new Date(d).toLocaleString("pl-PL", {
+    year: "numeric", month: "2-digit", day: "2-digit",
+    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    hour12: false,
+  });
 }
 
 export default async function ContentReviewsListPage() {
@@ -61,7 +65,7 @@ export default async function ContentReviewsListPage() {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ borderBottom: "2px solid #DDE3EE" }}>
-                {["Obszar", "Rozpoczęta", "Ukończona", "Bloki", "Zatw.", "Odrzuc.", "Lokalizacja", "IP", "Status"].map((h) => (
+                {["Obszar", "Rozpoczęta", "Ukończona", "Bloki", "Zatw.", "Odrzuc.", "IP", "Status"].map((h) => (
                   <th key={h} style={{ fontSize: "0.6875rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#A6B2CC", padding: "0.625rem 0.875rem", textAlign: "left" }}>{h}</th>
                 ))}
                 <th style={{ fontSize: "0.6875rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#A6B2CC", padding: "0.625rem 0.875rem", textAlign: "left" }}>Otwórz</th>
@@ -84,12 +88,9 @@ export default async function ContentReviewsListPage() {
                     <td style={{ padding: "0.75rem 0.875rem", fontSize: "0.8125rem", color: "#242F44" }}>{s.blockReviews.length}</td>
                     <td style={{ padding: "0.75rem 0.875rem", fontSize: "0.8125rem", fontWeight: 600, color: "#186B47" }}>{approved}</td>
                     <td style={{ padding: "0.75rem 0.875rem", fontSize: "0.8125rem", fontWeight: rejected > 0 ? 600 : 400, color: rejected > 0 ? "#8E0055" : "#A6B2CC" }}>{rejected}</td>
-                    <td style={{ padding: "0.75rem 0.875rem", fontSize: "0.8125rem", color: "#767171" }}>
-                      {s.city || s.country ? `${s.city ?? ""}${s.city && s.country ? ", " : ""}${s.country ?? ""}` : "—"}
-                    </td>
-                    <td style={{ padding: "0.75rem 0.875rem", fontSize: "0.75rem", color: ipCount > 1 ? "#8E0055" : "#A6B2CC", fontFamily: "monospace", fontWeight: ipCount > 1 ? 600 : 400 }}>
-                      {s.ipAddress ? `${s.ipAddress.slice(0, 15)}` : "—"}
-                      {ipCount > 1 && <span style={{ fontSize: "0.625rem", marginLeft: "0.25rem" }}>×{ipCount}</span>}
+                    <td style={{ padding: "0.75rem 0.875rem", fontSize: "0.6875rem", color: "#A6B2CC", fontFamily: "monospace" }}>
+                      {s.ipAddress ?? "—"}
+                      {ipCount > 1 && <span style={{ fontSize: "0.625rem", marginLeft: "0.25rem", color: "#8E0055", fontFamily: "inherit" }}>×{ipCount}</span>}
                     </td>
                     <td style={{ padding: "0.75rem 0.875rem" }}>
                       <span style={{

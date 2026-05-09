@@ -148,7 +148,7 @@ export default function StartPage() {
           </Link>
 
           <Link
-            href="/filar"
+            href="/review"
             style={{
               display: "flex",
               alignItems: "center",
@@ -173,7 +173,7 @@ export default function StartPage() {
             >
               02
             </span>
-            <span>Rozpocznij ocenę →</span>
+            <span>Rozpocznij ocenę treści →</span>
           </Link>
         </nav>
 

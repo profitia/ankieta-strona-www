@@ -67,11 +67,13 @@ export default async function AdminReviewDetailPage({ params }: PageProps) {
   const dateFormatted = (d: Date) =>
     d.toLocaleString("pl-PL", {
       timeZone: "Europe/Warsaw",
-      day: "2-digit",
-      month: "long",
       year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
     });
 
   return (
@@ -138,22 +140,17 @@ export default async function AdminReviewDetailPage({ params }: PageProps) {
               )}
             </p>
           </div>
-          {(session.ipAddress || session.city || session.country) && (
+          {(session.ipAddress) && (
             <div>
-              <p style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "#A6B2CC", marginBottom: "0.375rem" }}>Lokalizacja</p>
-              <p style={{ fontSize: "0.875rem", color: "#242F44" }}>
-                {[session.city, session.country].filter(Boolean).join(", ") || "—"}
+              <p style={{ fontSize: "0.6875rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "#A6B2CC", marginBottom: "0.375rem" }}>IP</p>
+              <p style={{ fontSize: "0.6875rem", fontFamily: "monospace", color: "#CAD2E3", margin: 0 }}>
+                {session.ipAddress}
+                {ipSessionCount && ipSessionCount > 1 && (
+                  <span style={{ marginLeft: "0.5rem", color: "#8E0055", fontFamily: "inherit", fontWeight: 600 }}>
+                    · {ipSessionCount} sesji z tego IP
+                  </span>
+                )}
               </p>
-              {session.ipAddress && (
-                <p style={{ fontSize: "0.75rem", fontFamily: "monospace", color: "#A6B2CC", marginTop: "0.125rem" }}>
-                  {session.ipAddress}
-                  {ipSessionCount && ipSessionCount > 1 && (
-                    <span style={{ marginLeft: "0.5rem", color: "#8E0055", fontFamily: "inherit", fontWeight: 600 }}>
-                      · {ipSessionCount} sesji z tego IP
-                    </span>
-                  )}
-                </p>
-              )}
             </div>
           )}
         </div>
