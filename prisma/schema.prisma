@@ -146,3 +146,18 @@ model ContentFinalAnswer {
 
   @@unique([sessionId, questionId])
 }
+
+// ---------------------------------------------------------------------------
+// AI Synthesis Summaries (cached, on-demand generation)
+// ---------------------------------------------------------------------------
+
+model AiSummary {
+  id          String   @id @default(cuid())
+  scope       String   // "session" | "pillar" | "page"
+  scopeId     String   // session ID | pillar slug | "pillarSlug:pageSlug"
+  content     String
+  model       String   @default("gpt-4.1-mini")
+  generatedAt DateTime @default(now())
+
+  @@unique([scope, scopeId])
+}

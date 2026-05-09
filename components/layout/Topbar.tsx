@@ -7,9 +7,13 @@ import { useAppStore } from "@/stores/app-store";
 import { usePathname } from "next/navigation";
 
 const breadcrumbMap: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/dashboard/pillars": "Pillars",
-  "/dashboard/reviews": "Reviews",
+  "/dashboard": "Przegląd",
+  "/dashboard/filary": "Filary",
+  "/dashboard/strony": "Strony",
+  "/dashboard/review": "Review",
+  "/dashboard/eksport": "Eksport",
+  "/dashboard/pillars": "Filary",
+  "/dashboard/reviews": "Review",
   "/dashboard/analytics": "Analytics",
 };
 
